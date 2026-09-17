@@ -1,3 +1,4 @@
+""" Script refactorizado — Parte 3 """
 def calcular_promedio(lista_numeros: list[int]) -> float:
     """Calcula el promedio de una lista de números.
 
