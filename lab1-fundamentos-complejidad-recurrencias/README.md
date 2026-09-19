@@ -80,3 +80,377 @@ Código utilizado para esta parte:
 
 ![Tiempo de ejecución de insertion sort por escenario](graficas/parte3_tiempo.png)
 
+# Parte 4 — Complejidad de merge sort e insertion sort: cálculo y validación
+
+### 4.1 — Cálculo teórico
+
+#### Complejidad de merge sort
+
+Para merge sort, el algoritmo divide la lista en dos partes aproximadamente iguales y aplica el mismo procedimiento a cada una. Después de ordenar las dos partes, las combina en una sola lista ordenada.
+
+Por esta razón, la recurrencia es:
+
+\[
+T(n) = 2T(n/2) + \Theta(n)
+\]
+
+Cada término representa una parte del trabajo:
+
+- `2T(n/2)`: representa el costo de resolver los dos subproblemas, cada uno con aproximadamente la mitad de los elementos.
+- `\Theta(n)`: corresponde al proceso de combinar las dos partes ordenadas. Para hacerlo hay que recorrer los elementos de ambas partes y construir nuevamente la lista ordenada.
+
+#### Cálculo manual de insertion sort
+
+Para realizar el cálculo manual voy a utilizar la misma implementación de `insertion_sort` utilizada en el experimento:
+
+```python
+lista = datos.copy()
+
+comparaciones = 0
+
+for i in range(1, len(lista)):
+
+    j = i
+
+    while j > 0:
+
+        comparaciones += 1
+
+        if lista[j - 1] >= lista[j]:
+
+            break
+
+        lista[j - 1], lista[j] = lista[j], lista[j - 1]
+
+        j -= 1
+
+return lista, comparaciones
+```
+
+#### Mejor caso
+
+El mejor caso ocurre cuando los datos ya están ordenados en el mismo sentido en que los necesita Tamiza, es decir, de mayor riesgo a menor riesgo.
+
+En este caso, el algoritmo entra una sola vez al ciclo `while` para cada posición. La comparación realizada por el `if` permite detener inmediatamente el proceso porque los elementos ya están en el orden correcto.
+
+| Línea | Veces que se ejecuta |
+| --- | ---: |
+| `lista = datos.copy()` | 1 |
+| `comparaciones = 0` | 1 |
+| `for i in range(1, len(lista))` | `n - 1` |
+| `j = i` | `n - 1` |
+| `while j > 0` | `n - 1` |
+| `comparaciones += 1` | `n - 1` |
+| `if lista[j - 1] >= lista[j]` | `n - 1` |
+| `break` | `n - 1` |
+| Intercambio | 0 |
+| `j -= 1` | 0 |
+| `return lista, comparaciones` | 1 |
+
+En el mejor caso, el ciclo externo se ejecuta `n - 1` veces y en cada iteración se realiza una sola comparación entre elementos. Por lo tanto, el crecimiento del trabajo es proporcional a `n`.
+
+La complejidad temporal del mejor caso es:
+
+\[
+\boxed{T(n)=\Theta(n)}
+\]
+
+Aunque en la tabla `lista = datos.copy()` aparece como una sola ejecución de la instrucción, la copia internamente debe recorrer los elementos de la lista. Esto también tiene un costo lineal. Por lo tanto, el resultado general del mejor caso sigue siendo `\Theta(n)`.
+
+##### Peor caso
+
+El peor caso ocurre cuando los datos están completamente en el orden contrario al que necesita Tamiza. Por ejemplo, para una lista de 10 elementos:
+
+```text
+[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+```
+
+En este caso, los elementos deben desplazarse prácticamente hasta el extremo contrario de la lista para quedar ordenados de mayor a menor.
+
+La cantidad de veces que se ejecutan las instrucciones que dependen del ciclo `while` aumenta en cada iteración del ciclo externo:
+
+| Línea | Veces que se ejecuta |
+| --- | ---: |
+| `lista = datos.copy()` | 1 |
+| `comparaciones = 0` | 1 |
+| `for i in range(1, len(lista))` | `n - 1` |
+| `j = i` | `n - 1` |
+| `while j > 0` | \(\frac{n(n-1)}{2}\) |
+| `comparaciones += 1` | \(\frac{n(n-1)}{2}\) |
+| `if lista[j - 1] >= lista[j]` | \(\frac{n(n-1)}{2}\) |
+| Intercambio | \(\frac{n(n-1)}{2}\) |
+| `j -= 1` | \(\frac{n(n-1)}{2}\) |
+| `break` | 0 |
+| `return lista, comparaciones` | 1 |
+
+Para entender de dónde sale esta cantidad, se puede observar el número de comparaciones realizadas en cada iteración:
+
+```text
+i = 1  → 1 comparación
+i = 2  → 2 comparaciones
+i = 3  → 3 comparaciones
+...
+i = n-1 → n-1 comparaciones
+```
+
+Por lo tanto, la cantidad total de comparaciones es:
+
+\[
+1+2+3+\cdots +(n-1)
+\]
+
+La suma de los primeros `n - 1` números enteros positivos es:
+
+\[
+\frac{n(n-1)}{2}
+\]
+
+Por ejemplo, si:
+
+\[
+n=5
+\]
+
+entonces:
+
+\[
+1+2+3+4=10
+\]
+
+y utilizando la fórmula:
+
+\[
+\frac{5(5-1)}{2}
+=
+\frac{5(4)}{2}
+=
+10
+\]
+
+Por lo tanto, el número de comparaciones en el peor caso es:
+
+\[
+\frac{n(n-1)}{2}
+\]
+
+Desarrollando la expresión:
+
+\[
+\frac{n(n-1)}{2}
+=
+\frac{n^2-n}{2}
+\]
+
+o también:
+
+\[
+\frac{1}{2}n^2-\frac{1}{2}n
+\]
+
+El término que domina el crecimiento cuando `n` aumenta es:
+
+\[
+n^2
+\]
+
+Por lo tanto, la complejidad temporal del peor caso es:
+
+\[
+\boxed{T(n)=\Theta(n^2)}
+\]
+
+##### Caso promedio
+
+El caso promedio representa el comportamiento del algoritmo cuando se consideran diferentes arreglos posibles de los datos para un mismo tamaño `n`. En el experimento de Tamiza, este comportamiento se aproxima utilizando datos generados aleatoriamente.
+
+En una entrada aleatoria, algunos elementos pueden encontrarse cerca de la posición que les corresponde, mientras que otros pueden necesitar varios desplazamientos. Por esta razón, el trabajo realizado se encuentra entre el comportamiento del mejor y del peor caso.
+
+En promedio, un elemento debe desplazarse aproximadamente una cantidad intermedia de las posiciones que podría recorrer. Por esta razón, el número de desplazamientos y comparaciones crece proporcionalmente al número de pares de elementos que pueden encontrarse en un orden que requiera desplazamiento.
+
+La suma:
+
+\[
+1+2+3+\cdots +(n-1)
+\]
+
+representa el crecimiento máximo utilizado anteriormente para el peor caso. En el caso promedio no se debe interpretar esta suma como el número exacto de comparaciones que siempre se realizan, sino como una referencia para observar el orden de crecimiento. En una entrada aleatoria se realizan, en promedio, menos desplazamientos que en el peor caso, pero el crecimiento continúa siendo cuadrático.
+
+La suma completa del peor caso es:
+
+\[
+\frac{n(n-1)}{2}
+=
+\frac{n^2-n}{2}
+\]
+
+y su término dominante es `n²`. En el caso promedio, aunque la cantidad exacta de operaciones sea menor que en el peor caso, sigue creciendo proporcionalmente a `n²`.
+
+Por lo tanto, la complejidad temporal del caso promedio es:
+
+\[
+\boxed{T(n)=\Theta(n^2)}
+\]
+
+Los datos aleatorios utilizados en el experimento permiten aproximar este comportamiento, pero una ejecución concreta no representa por sí sola todos los posibles arreglos de entrada para un determinado tamaño `n`.
+
+#### Tabla de complejidades esperadas
+
+| Algoritmo | Mejor caso | Caso promedio | Peor caso |
+| --- | --- | --- | --- |
+| Insertion sort | \(\Theta(n)\) | \(\Theta(n^2)\) | \(\Theta(n^2)\) |
+| Merge sort | \(\Theta(n\log n)\) | \(\Theta(n\log n)\) | \(\Theta(n\log n)\) |
+
+La diferencia principal entre los dos algoritmos está en la forma en que aumenta el trabajo cuando crece el número de registros.
+
+Para `insertion sort`, el mejor caso es lineal porque cuando los datos ya están ordenados solamente necesita realizar una comparación por posición. Sin embargo, cuando los elementos necesitan muchos desplazamientos, el número de operaciones crece de forma cuadrática.
+
+En `merge sort`, el proceso de división y combinación mantiene una estructura similar independientemente de cómo estén organizados inicialmente los datos. Por esta razón, su complejidad se mantiene en `\Theta(n log n)` para los tres casos.
+
+#### Resolución mediante árbol de recursión
+
+Para resolver la recurrencia de `merge sort` voy a utilizar el método del árbol de recursión.
+
+Partimos de la recurrencia:
+
+\[
+T(n)=2T(n/2)+cn
+\]
+
+donde `cn` representa el costo de combinar las dos partes ordenadas.
+
+La primera división genera dos problemas de tamaño `n/2`:
+
+```text
+                         T(n)
+                       /      \
+                  T(n/2)      T(n/2)
+                  /    \      /    \
+             T(n/4) T(n/4) T(n/4) T(n/4)
+                 ...
+```
+
+El costo de combinación en cada nivel puede analizarse de la siguiente manera.
+
+En el nivel 0 se encuentra el problema original:
+
+\[
+cn
+\]
+
+En el nivel 1 existen dos subproblemas de tamaño `n/2`. El costo total de ese nivel es:
+
+\[
+2\left(c\frac{n}{2}\right)
+\]
+
+Simplificando:
+
+\[
+2\left(c\frac{n}{2}\right)=cn
+\]
+
+En el nivel 2 existen cuatro subproblemas de tamaño `n/4`:
+
+\[
+4\left(c\frac{n}{4}\right)=cn
+\]
+
+Por lo tanto, en cada nivel el costo total de combinación sigue siendo:
+
+\[
+cn
+\]
+
+En un nivel general `k`, existen:
+
+\[
+2^k
+\]
+
+subproblemas y cada uno tiene tamaño:
+
+\[
+\frac{n}{2^k}
+\]
+
+El costo total del nivel `k` es:
+
+\[
+2^k\left(c\frac{n}{2^k}\right)
+\]
+
+Simplificando:
+
+\[
+2^k\left(c\frac{n}{2^k}\right)=cn
+\]
+
+Por lo tanto, cada nivel del árbol aporta un costo de `cn`.
+
+El proceso de división termina cuando cada subproblema tiene tamaño 1. Para encontrar ese nivel se plantea:
+
+\[
+\frac{n}{2^k}=1
+\]
+
+Multiplicando por `2^k`:
+
+\[
+n=2^k
+\]
+
+Aplicando logaritmo en base 2:
+
+\[
+k=\log_2 n
+\]
+
+Esto significa que el proceso de división llega al caso base después de `log₂(n)` niveles de división.
+
+Como cada nivel tiene un costo de:
+
+\[
+cn
+\]
+
+y existen aproximadamente:
+
+\[
+\log_2 n
+\]
+
+niveles de combinación, el costo total de esas combinaciones es:
+
+\[
+cn\log_2 n
+\]
+
+Además, en el último nivel existen aproximadamente `n` subproblemas de tamaño 1, por lo que el costo de las hojas es:
+
+\[
+\Theta(n)
+\]
+
+Por lo tanto, la recurrencia completa queda:
+
+\[
+T(n)=cn\log_2 n+\Theta(n)
+\]
+
+El término dominante cuando `n` aumenta es:
+
+\[
+n\log_2 n
+\]
+
+Por lo tanto:
+
+\[
+\boxed{T(n)=\Theta(n\log n)}
+\]
+
+Así, la complejidad temporal de `merge sort` es:
+
+\[
+\boxed{\Theta(n\log n)}
+\]
