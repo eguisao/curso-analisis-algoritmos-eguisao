@@ -6,10 +6,14 @@
 
 Para ejecutar el laboratorio se debe tener Python instalado y activar el entorno virtual del proyecto.
 
-Desde la carpeta `lab1-fundamentos-complejidad-recurrencias`:
 
-```bash
+ ejecutar los siguientes comandos:
+
+```cmd
+venv\Scripts\activate
+cd lab1-fundamentos-complejidad-recurrencias
 python parte3_casos.py
+python parte4_complejidad.py
 ```
 
 ## Parte 1 — Analizar el algoritmo antes de comprar el servidor
@@ -86,6 +90,12 @@ Código utilizado para esta parte:
 
 #### Complejidad de merge sort
 
+Código utilizado para esta parte:
+
+- [Experimento de la Parte 4](parte4_complejidad.py)
+- [Algoritmos de ordenamiento](algoritmos.py)
+- [Generadores de datos](datos.py)
+
 Para merge sort, el algoritmo divide la lista en dos partes aproximadamente iguales y aplica el mismo procedimiento a cada una. Después de ordenar las dos partes, las combina en una sola lista ordenada.
 
 Por esta razón, la recurrencia es:
@@ -100,6 +110,12 @@ Cada término representa una parte del trabajo:
 - `\Theta(n)`: corresponde al proceso de combinar las dos partes ordenadas. Para hacerlo hay que recorrer los elementos de ambas partes y construir nuevamente la lista ordenada.
 
 #### Cálculo manual de insertion sort
+
+Código utilizado para esta parte:
+
+- [Experimento de la Parte 4](parte4_complejidad.py)
+- [Algoritmos de ordenamiento](algoritmos.py)
+- [Generadores de datos](datos.py)
 
 Para realizar el cálculo manual voy a utilizar la misma implementación de `insertion_sort` utilizada en el experimento:
 
@@ -454,3 +470,59 @@ Así, la complejidad temporal de `merge sort` es:
 \[
 \boxed{\Theta(n\log n)}
 \]
+
+### 4.2 — Validación experimental
+
+Para validar los resultados obtenidos en el cálculo teórico, se comparó el tiempo de ejecución de `insertion_sort` y `merge_sort` utilizando el escenario A de Tamiza, es decir, datos generados aleatoriamente. Para que la comparación fuera equivalente, ambos algoritmos se ejecutaron sobre los mismos tamaños de entrada utilizados en la Parte 3:
+
+```text
+100, 200, 400, 800, 1600, 3200 y 6400 registros
+```
+
+La medición del tiempo se realizó utilizando `time.perf_counter()`. La generación de los datos se hizo antes de iniciar la medición, por lo que el tiempo registrado corresponde únicamente a la ejecución del algoritmo de ordenamiento.
+
+Los resultados obtenidos fueron:
+
+| Tamaño de entrada (n) | Insertion sort (segundos) | Merge sort (segundos) |
+| ---: | ---: | ---: |
+| 100 | 0.000681 | 0.000282 |
+| 200 | 0.002602 | 0.000642 |
+| 400 | 0.011126 | 0.001318 |
+| 800 | 0.049165 | 0.002731 |
+| 1600 | 0.207643 | 0.005904 |
+| 3200 | 0.833547 | 0.013025 |
+| 6400 | 3.895967 | 0.036304 |
+
+La gráfica obtenida es:
+
+![Comparación del tiempo de ejecución de insertion sort y merge sort](graficas/parte4_tiempo.png)
+
+Al observar la gráfica, se puede ver que las dos curvas comienzan con tiempos pequeños cuando el tamaño de entrada es reducido. Sin embargo, a medida que aumenta la cantidad de registros, las curvas empiezan a presentar un comportamiento diferente.
+
+La curva de `insertion_sort` aumenta de manera mucho más pronunciada. Con 100 registros el tiempo medido fue de aproximadamente `0.000681` segundos, mientras que con 6400 registros llegó a aproximadamente `3.895967` segundos. El aumento se hace especialmente evidente a partir de los tamaños de entrada de 1600, 3200 y 6400 registros.
+
+
+## 4.3 — Concepto técnico a la Secretaría de Salud
+
+Después de revisar los resultados obtenidos, considero que para Tamiza se debería utilizar `merge_sort` como algoritmo principal. La razón no es solamente el resultado de la complejidad teórica, sino el comportamiento que se pudo observar en las pruebas realizadas. En este caso hay un punto importante, el canal por el que llegan los datos puede cambiar sin previo aviso. Por eso no sería conveniente depender de que los registros lleguen siempre casi ordenados para obtener un buen tiempo de respuesta.
+
+En las pruebas de la Parte 3 se pudo ver precisamente esta diferencia. Con 6.400 registros, `insertion_sort` tardó **0,138289 segundos** en el escenario B, donde los datos estaban casi ordenados. En cambio, para el escenario A tardó **3,883884 segundos** y para el escenario C llegó a **6,587230 segundos**. Esto muestra que su tiempo cambia bastante dependiendo de cómo lleguen los datos. En la comparación de la Parte 4.2 también se observó que, con 6.400 registros del escenario A, `insertion_sort` tardó **3,895967 segundos**, mientras que `merge_sort` tardó **0,036304 segundos**. Estos resultados se pueden observar en la gráfica `graficas/parte4_tiempo.png`.
+
+Para saber qué podría pasar con los 1.200.000 registros de Tamiza, hice una extrapolación utilizando como referencia la medición de 6.400 registros. Es importante aclarar que **estos valores son estimaciones y no corresponden a una medición directa con 1.200.000 registros**.
+
+Para `insertion_sort`, tomando como referencia el crecimiento cuadrático observado y calculado en la Parte 4.1:
+
+$$
+\left(\frac{1.200.000}{6.400}\right)^2=35156,25
+$$
+
+Al aplicar este factor al tiempo medido de **3,895967 segundos**, el resultado estimado es de aproximadamente **136.978 segundos**, equivalentes a unas **38 horas**. Con este resultado, el proceso no alcanzaría a terminar dentro de la ventana disponible de cuatro horas.
+
+En el caso de `merge_sort`, tomando el comportamiento $n\log n$ y los **0,036304 segundos** medidos con 6.400 registros, la extrapolación da aproximadamente **10,9 segundos** para 1.200.000 registros. Nuevamente, se trata solamente de una estimación. El tiempo real tendría que comprobarse posteriormente con una prueba sobre un volumen de datos representativo. Aun así, la diferencia observada en las mediciones es bastante amplia y la estimación queda muy por debajo de las cuatro horas.
+
+Con estos resultados, **no considero que comprar solamente un servidor con el doble de velocidad sea una solución suficiente**. En la prueba de 6.400 registros, `insertion_sort` necesitó **3,895967 segundos**, mientras que `merge_sort` tardó **0,036304 segundos**, como se observa en la gráfica de la Parte 4.2. Incluso suponiendo que un servidor dos veces más rápido redujera el tiempo de `insertion_sort` exactamente a la mitad, la estimación para 1.200.000 registros seguiría estando alrededor de **19 horas**, por encima de las cuatro horas requeridas.
+
+También hay que tener en cuenta que `merge_sort` tiene un costo adicional de memoria, ya que necesita crear listas durante el proceso de división y mezcla. `insertion_sort`, en cambio, requiere menos memoria adicional. Este aspecto debería revisarse antes de llevar la solución a producción. Sin embargo, existe otro riesgo importante: si el flujo de reproceso cambia y los datos dejan de llegar casi ordenados, la ventaja que `insertion_sort` mostró en el escenario B podría desaparecer.
+
+Por lo anterior, la recomendación es utilizar **`merge_sort` como una única implementación para Tamiza**, especialmente porque el tipo de entrada puede cambiar. Las pruebas realizadas muestran que mantiene tiempos mucho menores en el escenario A y que su comportamiento se ajusta a lo esperado según el análisis de complejidad realizado. Antes de ponerlo definitivamente en producción, sería conveniente realizar una prueba controlada con un volumen cercano al real para confirmar estos tiempos y revisar el consumo de memoria.
+
