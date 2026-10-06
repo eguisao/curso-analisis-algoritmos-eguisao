@@ -43,7 +43,7 @@ Muy buen trabajo: el laboratorio está completo y los resultados son sólidos.
 - Los generadores producen valores distintos, del tamaño pedido y con semilla reproducible.
 
 **Lo que puede mejorar:**
-- Hay varios detalles de estilo: líneas en blanco con espacios, falta de dos líneas en blanco entre funciones y archivos sin salto de línea al final.
+- Hay un detalle de estilo: falta de dos líneas en blanco entre funciones.
 - Los docstrings no dejan línea en blanco antes de `Returns` y la función `medir_tiempo` no tiene tipo en el parámetro `algoritmo`.
 - `generar_casi_ordenado` falla si se le pide una lista vacía (n = 0).
 
