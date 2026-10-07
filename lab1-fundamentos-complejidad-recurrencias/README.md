@@ -4,10 +4,11 @@
 
 ## 1. Instrucciones para reproducir
 
-Para ejecutar el laboratorio se debe tener Python instalado y activar el entorno virtual del proyecto.
+Para ejecutar el laboratorio se debe tener Python instalado y ubicarse en la carpeta raíz del proyecto. Se recomienda utilizar el entorno virtual para instalar y ejecutar las dependencias.
 
+### Windows
 
- ejecutar los siguientes comandos:
+Desde la carpeta raíz del proyecto:
 
 ```cmd
 venv\Scripts\activate
@@ -15,6 +16,13 @@ cd lab1-fundamentos-complejidad-recurrencias
 python parte3_casos.py
 python parte4_complejidad.py
 ```
+
+### Linux/Mac
+
+source venv/bin/activate
+cd lab1-fundamentos-complejidad-recurrencias
+python3 parte3_casos.py
+python3 parte4_complejidad.py
 
 ## Parte 1 — Analizar el algoritmo antes de comprar el servidor
 
@@ -143,7 +151,7 @@ for i in range(1, len(lista)):
 return lista, comparaciones
 ```
 
-#### Mejor caso
+##### Mejor caso
 
 El mejor caso ocurre cuando los datos ya están ordenados en el mismo sentido en que los necesita Tamiza, es decir, de mayor riesgo a menor riesgo.
 
@@ -519,7 +527,7 @@ Por lo tanto, **`merge_sort` es el algoritmo más adecuado para Tamiza** cuando 
 
 Para reducir la influencia de variaciones momentáneas del sistema, cada medición se realizó cinco veces y se utilizó el tiempo promedio. La generación de los datos se mantuvo fuera de la medición, por lo que las repeticiones corresponden únicamente a la ejecución de cada algoritmo de ordenamiento.
 
-## 4.3 — Concepto técnico a la Secretaría de Salud
+### 4.3 — Concepto técnico a la Secretaría de Salud
 
 Después de revisar los resultados obtenidos, considero que para Tamiza se debería utilizar `merge_sort` como algoritmo principal. La razón no es solamente el resultado de la complejidad teórica, sino el comportamiento que se pudo observar en las pruebas realizadas. En este caso hay un punto importante: el canal por el que llegan los datos puede cambiar sin previo aviso. Por eso, no sería conveniente depender de que los registros lleguen siempre casi ordenados para obtener un buen tiempo de respuesta.
 
