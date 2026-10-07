@@ -25,6 +25,30 @@ def medir_tiempo(algoritmo: Callable[[list[int]], tuple[list[int], int]]  , dato
     return fin - inicio
 
 
+def medir_tiempo_promedio(
+    algoritmo: Callable[[list[int]], tuple[list[int], int]],
+    datos: list[int],
+    repeticiones: int = 5,
+) -> float:
+    """Calcula el tiempo promedio de varias ejecuciones.
+
+    Args:
+        algoritmo: función de ordenamiento que se desea medir.
+        datos: lista de datos que será ordenada.
+        repeticiones: cantidad de ejecuciones utilizadas para calcular
+            el promedio.
+
+    Returns:
+        Tiempo promedio de ejecución en segundos.
+    """
+    tiempos = []
+
+    for _ in range(repeticiones):
+        tiempos.append(medir_tiempo(algoritmo, datos))
+
+    return sum(tiempos) / len(tiempos)
+
+
 def main() -> None:
     """Ejecuta la comparación experimental de los dos algoritmos."""
     tamanos = [100, 200, 400, 800, 1600, 3200, 6400]
@@ -35,8 +59,8 @@ def main() -> None:
     for n in tamanos:
         datos = generar_aleatorio(n)
 
-        tiempo_insertion = medir_tiempo(insertion_sort, datos)
-        tiempo_merge = medir_tiempo(merge_sort, datos)
+        tiempo_insertion = medir_tiempo_promedio(insertion_sort, datos)
+        tiempo_merge = medir_tiempo_promedio(merge_sort, datos)
 
         tiempos_insertion.append(tiempo_insertion)
         tiempos_merge.append(tiempo_merge)
