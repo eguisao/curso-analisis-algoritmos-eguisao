@@ -3,12 +3,12 @@
 import time
 
 import matplotlib.pyplot as plt
-
+from collections.abc import Callable
 from algoritmos import insertion_sort, merge_sort
 from datos import generar_aleatorio
 
 
-def medir_tiempo(algoritmo, datos: list[int]) -> float:
+def medir_tiempo(algoritmo: Callable[[list[int]], tuple[list[int], int]]  , datos: list[int]) -> float:
     """Mide el tiempo de ejecución de un algoritmo de ordenamiento.
 
     Args:
