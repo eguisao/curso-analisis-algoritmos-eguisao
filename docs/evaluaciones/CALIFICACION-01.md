@@ -69,7 +69,7 @@ Muy buen trabajo: el laboratorio está completo y los resultados son sólidos.
 - Los encabezados de la Parte 4 cambian de nivel sin orden claro.
 
 ## ¿El código funciona?
-Sí. Los dos algoritmos ordenan bien en mis pruebas, ambos scripts corren sin errores y generan las tres gráficas.
+Sí. Los dos algoritmos ordenan bien, ambos scripts corren sin errores y generan las tres gráficas.
 
 ## Para el próximo laboratorio
 - Cierre cada análisis de gráfica con una conclusión explícita y compárela con la teoría.
