@@ -1,78 +1,79 @@
 # Retroalimentación — Laboratorio 1: Fundamentos, complejidad y recurrencias
 
-**Estudiante:** Esneider Guisao Ospina · **Laboratorio:** Fundamentos, complejidad y recurrencias
-**Fecha límite:** 2026-10-04 23:59 · **Versión revisada:** commit `2b95f4d`
+**Estudiante:** Esneider Guisao Ospina · **Laboratorio:** Laboratorio evaluativo 01 — Fundamentos, complejidad y recurrencias
+**Fecha límite:** 2026-10-30 23:59 · **Versión revisada:** commit `b5c90dd`
 
-Muy buen trabajo: el laboratorio está completo y los resultados son sólidos.
+Muy buen trabajo: el informe es completo, ordenado y se apoya en sus propias mediciones.
 
 ## Nota
 
 | Criterio | Puntos |
 |---|---|
-| Corrección conceptual | 20 / 25 |
+| Corrección conceptual | 21 / 25 |
 | Calidad de la explicación teórica | 22 / 25 |
-| Corrección de la implementación | 15 / 20 |
-| Calidad del análisis de las gráficas | 15 / 20 |
-| Documentación y organización del informe | 8 / 10 |
-| **Total** | **80 / 100** |
-| **Nota (0–5)** | **4.00** |
+| Corrección de la implementación | 19 / 20 |
+| Calidad del análisis de las gráficas | 17 / 20 |
+| Documentación y organización del informe | 9 / 10 |
+| **Total** | **88 / 100** |
+| **Nota (0–5)** | **4.40** |
 
-## 1. Corrección conceptual (20 / 25)
+## 1. Corrección conceptual (21 / 25)
 **Lo que hizo bien:**
-- Distingue bien entre que el resultado sea correcto y que llegue a tiempo, y nombra la ventana de cuatro horas como lo que se incumple.
-- En la Parte 2 identifica dos perjuicios (el paciente y el operador del centro de contacto), dice quién asume el costo y explica por qué el orden de la lista es una obligación adicional.
+- Distingue con claridad que el orden correcto no basta: el proceso también debe terminar en la ventana de cuatro horas, y nombra los tres cierres incompletos como evidencia.
+- Explica que un servidor el doble de rápido no cambia el crecimiento cuadrático del trabajo.
+- En la Parte 2 identifica dos perjuicios concretos (el paciente y el operador del centro de contacto) y dice quién asume el costo en cada uno.
+- Discute bien que el orden de la lista decide a quién se llama primero, y que por eso el resultado debe ser correcto además de rápido.
 
-**Lo que puede mejorar:**
-- Explique con más fuerza por qué un servidor del doble de rápido no basta: el trabajo del algoritmo crece mucho más rápido que la velocidad que se gana.
-- El segundo ejemplo (mensajes de WhatsApp) es correcto pero muy breve; le faltó detallar mejor qué se procesa y por qué es inviable.
-- En la dimensión ambiental no relaciona el tiempo con energía de forma concreta (por ejemplo, horas de servidor por año).
+**Lo que puede mejorar (y cómo corregirlo):**
+- El segundo ejemplo (campaña de 100.000 mensajes) no deja claro qué parte del proceso se vuelve inviable ni por qué el algoritmo es el culpable del tiempo.
+  → *Cómo corregirlo:* indique qué operación concreta crece con la cantidad de datos y qué recurso o plazo se incumple al crecer.
+- La relación entre tiempo de ejecución y energía se queda en lo general.
+  → *Cómo corregirlo:* conecte el tiempo diario del proceso con su repetición cada madrugada durante años, usando un orden de magnitud que usted justifique.
 
 ## 2. Calidad de la explicación teórica (22 / 25)
 **Lo que hizo bien:**
-- Define los tres casos sobre entradas del mismo tamaño n, justifica que usaría el peor caso y deja escrita su predicción antes de medir.
-- Plantea la recurrencia de merge sort explicando cada término y la resuelve con árbol de recursión, nivel por nivel, hasta `Θ(n log n)`.
-- El cálculo línea a línea de insertion sort (mejor y peor caso) está claro, con la tabla de complejidades.
+- Define mejor, peor y promedio sobre entradas del mismo tamaño n, justifica usar el peor caso para decidir la entrada a producción y deja escrita la predicción antes de medir.
+- Plantea la recurrencia de merge sort explicando cada término y la resuelve paso a paso con el árbol de recursión (costo por nivel, número de niveles y costo total).
+- Calcula insertion sort línea a línea para el mejor y el peor caso, y presenta la tabla de complejidades.
 
-**Lo que puede mejorar:**
-- La explicación del caso promedio de insertion sort quedó vaga; falta mostrar por qué en promedio se hace cerca de la mitad del trabajo del peor caso.
-- El árbol de recursión está dibujado solo con los primeros niveles y sin el costo escrito al lado de cada nivel.
+**Lo que puede mejorar (y cómo corregirlo):**
+- El caso promedio de insertion sort se justifica con palabras, sin un conteo propio.
+  → *Cómo corregirlo:* piense cuántos pares de elementos están fuera de orden en promedio en una lista aleatoria y cuántos desplazamientos implica eso.
+- En la tabla del peor caso, la línea del `while` no cuenta la comprobación que termina cada ciclo.
+  → *Cómo corregirlo:* revise cuántas veces se evalúa esa condición por cada iteración del ciclo externo.
 
-## 3. Corrección de la implementación (15 / 20)
+## 3. Corrección de la implementación (19 / 20)
 **Lo que hizo bien:**
-- Ambos algoritmos ordenan bien, no cambian la lista original, cuentan comparaciones entre elementos y no usan `sorted()` ni `sort()`. Merge sort tiene su propia mezcla recursiva.
-- Los generadores producen valores distintos, del tamaño pedido y con semilla reproducible.
+- `insertion_sort` y `merge_sort` ordenan bien listas de varios tamaños, no alteran la lista recibida y cuentan solo comparaciones entre elementos.
+- `merge_sort` tiene su propia mezcla recursiva y no se usa `sorted()` ni `sort()`.
+- Los generadores producen listas con valores distintos, del tamaño pedido y con semilla reproducible. El escenario B queda con el 98 % ordenado y el 2 % al final.
+- Hay *type hints* y *docstrings* con `Args` y `Returns`.
 
-**Lo que puede mejorar:**
-- Hay un detalle de estilo: falta de dos líneas en blanco entre funciones.
-- Los docstrings no dejan línea en blanco antes de `Returns` y la función `medir_tiempo` no tiene tipo en el parámetro `algoritmo`.
-- `generar_casi_ordenado` falla si se le pide una lista vacía (n = 0).
+**Lo que puede mejorar (y cómo corregirlo):**
+- Las funciones `main` de `parte3_casos.py` y `parte4_complejidad.py` tienen *docstring* de una línea, sin las secciones del estilo Google.
+  → *Cómo corregirlo:* agregue la sección `Returns:` (por ejemplo, "Ninguno.") para que todas las funciones sigan el mismo formato.
 
-## 4. Calidad del análisis de las gráficas (15 / 20)
+## 4. Calidad del análisis de las gráficas (17 / 20)
 **Lo que hizo bien:**
-- Las tres gráficas existen, con título, ejes rotulados, leyenda y curvas en los mismos ejes.
-- La Parte 3.2 identifica con datos el mejor caso (B), el peor (C) y el promedio (A), y lo contrasta con su predicción.
-- El concepto técnico (4.3) recomienda merge sort, estima 38 horas para insertion sort y unos 11 segundos para merge sort, declarando que son estimaciones, y responde a la propuesta del servidor con un dato medido.
+- Las tres gráficas existen, tienen título, ejes rotulados y leyenda, y muestran las curvas pedidas en los mismos ejes.
+- Identifica con evidencia el mejor caso (B), el peor (C) y el promedio (A), y lo contrasta con su predicción.
+- Concluye que `merge_sort` es el mejor para Tamiza describiendo lo que hace cada curva, y explica por qué en tamaños pequeños las curvas se parecen.
+- El concepto técnico recomienda una sola implementación, extrapola a 1.200.000 registros declarándolo como estimación, responde a la compra del servidor con un dato medido y discute memoria y mantenimiento.
 
-**Lo que puede mejorar:**
-- La sección 4.2 termina sin una conclusión clara: falta decir cuál algoritmo es mejor para Tamiza, describir la curva de merge sort y contrastar con las complejidades de 4.1.
-- No comenta que con tamaños pequeños las curvas casi se juntan ni lo explica.
-- Cada medición se hizo una sola vez; repetirla y promediar daría curvas más confiables.
-- En 4.3 no discute la estabilidad ni el costo de mantenimiento (sí la memoria y el riesgo del escenario B).
+**Lo que puede mejorar (y cómo corregirlo):**
+- La tabla de la Parte 4.2 dice que con n = 6400 `insertion_sort` tardó 3.90 s y `merge_sort` 0.036 s, pero la gráfica `parte4_tiempo.png` muestra cerca de 3.4 s y cerca de 0.03 s. Además, la Parte 4.3 usa los valores de la gráfica, así que el informe se contradice.
+  → *Cómo corregirlo:* regenere la tabla y la gráfica con la misma corrida y use esos mismos números en 4.2 y 4.3.
+- No explica por qué el escenario B, siendo casi ordenado, aún hace cientos de miles de comparaciones con n = 6400.
+  → *Cómo corregirlo:* piense qué le pasa a cada uno de los registros nuevos del final cuando entra al tramo ya ordenado.
 
-## 5. Documentación y organización del informe (8 / 10)
+## 5. Documentación y organización del informe (9 / 10)
 **Lo que hizo bien:**
-- La carpeta y los archivos siguen exactamente la estructura pedida; las gráficas se ven en el informe y cada parte enlaza su código.
-- Hay varios commits descriptivos que muestran el avance.
+- Sigue la estructura de carpetas y los nombres de archivo del entregable. Hay informe por partes, gráficas incrustadas con ruta relativa que resuelve, instrucciones de reproducción y enlaces al código en cada parte práctica.
+- Hay más de cinco commits descriptivos sobre el laboratorio.
 
-**Lo que puede mejorar:**
-- Las instrucciones para reproducir tienen una frase cortada y solo sirven para Windows; agregue también cómo hacerlo en Linux/macOS.
-- Los encabezados de la Parte 4 cambian de nivel sin orden claro.
+**Lo que puede mejorar (y cómo corregirlo):**
+- En la raíz del repositorio hay un archivo vacío llamado `git` que no pertenece al entregable.
+  → *Cómo corregirlo:* elimínelo con `git rm git`.
 
 ## ¿El código funciona?
-Sí. Los dos algoritmos ordenan bien, ambos scripts corren sin errores y generan las tres gráficas.
-
-## Para el próximo laboratorio
-- Cierre cada análisis de gráfica con una conclusión explícita y compárela con la teoría.
-- Repita las mediciones varias veces y grafique el promedio.
-- Revise el estilo del código (PEP 8) antes de entregar y ponga tipos en todos los parámetros.
-- Dé números concretos en los argumentos (por ejemplo, consumo de energía estimado).
+Sí. Los dos algoritmos ordenan correctamente, los generadores producen los lotes pedidos y los scripts corren hasta el final generando las gráficas.
